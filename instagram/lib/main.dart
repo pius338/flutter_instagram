@@ -77,13 +77,13 @@ class Feed extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset('assets/sample.jpeg',),
+                child: ClipOval(child: Image.asset('assets/cat.avif',)),
               ),
               Text('minsiki2', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
-        Image.asset('assets/sample.jpeg'),
+        Image.asset('assets/cat.avif'),
         Text('dkdkdk'),
       ],
     );
