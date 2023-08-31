@@ -6,7 +6,7 @@ var customTheme = ThemeData(
       backgroundColor: Colors.grey,
     )
   ),
-  iconTheme: IconThemeData(color: Colors.blue),
+  iconTheme: IconThemeData(color: Colors.black),
   appBarTheme: AppBarTheme(
       color: Colors.white,
       elevation: 1,

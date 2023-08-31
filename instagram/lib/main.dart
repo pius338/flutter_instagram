@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram/style.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(
@@ -29,7 +30,7 @@ class _MyAppState extends State<MyApp> {
         feedData = jsonDecode(jsonData.body);
       });
     } else {
-      throw Exception('실패함ㅅㄱ');
+      throw Exception('실패함');
     }
   }
 
@@ -86,20 +87,65 @@ class _HomePageState extends State<HomePage> {
         itemCount: 3,
         itemBuilder: (context, i){
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(height: 50,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipOval(child: Image.network(widget.feedData[i]['image'].toString(),)),
+                      ),
+                      Text(widget.feedData[i]['user'], style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ClipOval(child: Image.network(widget.feedData[i]['image'].toString(),)),
-                  ),
-                  Text('minsiki2', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    child: Icon(Icons.more_horiz_outlined),
+                  )
                 ],
               ),
             ),
             Image.network(widget.feedData[i]['image'],),
-            Text('dkdkdk'),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                          child: Icon(Icons.favorite_border_outlined, size: 28),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                          child: Icon(Icons.chat_bubble_outline, size: 28),
+                        ),
+                        Icon(Icons.share_outlined, size: 28)
+                      ],
+                    ),
+                    Icon(Icons.save_alt_outlined, size: 28)
+                  ],
+                  ),
+                  Text("좋아요 ${widget.feedData[i]['likes']}개", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 2),),
+                  Row(
+                    children: [
+                      Text(widget.feedData[i]['user'] + ' ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 2),),
+                      Text(widget.feedData[i]['content'], style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, height: 2)),
+                    ],
+                  ),
+                  Text(widget.feedData[i]['date'], style: TextStyle(fontSize: 12, color: Colors.grey, height: 2),)
+                ],
+              ),
+            ),
           ],
         );
       }
