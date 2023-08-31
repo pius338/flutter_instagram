@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -49,7 +48,10 @@ class _MyAppState extends State<MyApp> {
         actions: [
           IconButton(
             onPressed: (){
-
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (c) => UploadPage())
+              );
             }, icon: Icon(Icons.add_box_outlined)
           )
         ],
@@ -81,10 +83,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var scroll = ScrollController();
+
+  @override
+  void initState(){
+    super.initState();
+    scroll.addListener(() {
+      if(scroll.position.pixels == scroll.position.maxScrollExtent){
+        getMoreData();
+        print(widget.feedData.length);
+      }
+    });
+  }
+
+  getMoreData() async {
+    var jsonData = await http.get(Uri.parse('https://codingapple1.github.io/app/more1.json'));
+    if (jsonData.statusCode == 200) {
+      setState(() {
+        widget.feedData.add(jsonDecode(jsonData.body));
+      });
+    } else {
+      throw Exception('실패함');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 3,
+        itemCount: widget.feedData.length,
+        controller: scroll,
         itemBuilder: (context, i){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,6 +176,26 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       }
+    );
+  }
+}
+
+class UploadPage extends StatelessWidget {
+  const UploadPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('이미지 업로드 화면'),
+          IconButton(onPressed: (){
+            Navigator.pop(context);
+          }, icon: Icon(Icons.close))
+        ],
+      ),
     );
   }
 }
