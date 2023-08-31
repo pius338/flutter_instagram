@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram/style.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(
@@ -19,6 +21,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tab = 0;
+  var feedData;
+  getData() async {
+    var jsonData = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
+    if (jsonData.statusCode == 200) {
+      setState(() {
+        feedData = jsonDecode(jsonData.body);
+      });
+    } else {
+      throw Exception('실패함ㅅㄱ');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +53,7 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      body: [HomePage(), Text('샵페이지')][tab],
+      body: [HomePage(feedData: feedData), Text('샵페이지')][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -51,41 +71,38 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, this.feedData});
+  final feedData;
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         itemCount: 3,
         itemBuilder: (context, i){
-        return Feed();
-      }
-    );
-  }
-}
-
-class Feed extends StatelessWidget {
-  const Feed({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(height: 50,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipOval(child: Image.asset('assets/cat.avif',)),
+        return Column(
+          children: [
+            Container(height: 50,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(child: Image.network(widget.feedData[i]['image'].toString(),)),
+                  ),
+                  Text('minsiki2', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                ],
               ),
-              Text('minsiki2', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-            ],
-          ),
-        ),
-        Image.asset('assets/cat.avif'),
-        Text('dkdkdk'),
-      ],
+            ),
+            Image.network(widget.feedData[i]['image'],),
+            Text('dkdkdk'),
+          ],
+        );
+      }
     );
   }
 }
